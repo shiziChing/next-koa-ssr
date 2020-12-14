@@ -1,14 +1,28 @@
 const Koa = require('koa');
 const next = require('next');
-
+const Router = require('koa-router');
 const dev = process.env.NODE_ENV !== 'production';
-console.log(process.env)
+// console.log(process.env)
 const app = next({dev})
 
 const handle = app.getRequestHandler()
 
 app.prepare().then(() => {
     const server = new Koa();
+    const router = new Router();
+    router.get('/b/:b', async ctx => {
+        const b = ctx.params.b
+        console.log('b --->', b)
+        await handle(ctx.req, ctx.res, {
+            pathname: '/b',
+            query: {
+                b,
+                xyz: 123112
+            }
+        })
+        ctx.response = false
+    })
+    server.use(router.routes())
     server.use(async (ctx, next) => {
         await handle(ctx.req, ctx.res);
         ctx.respond = false
