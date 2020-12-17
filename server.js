@@ -12,7 +12,7 @@ app.prepare().then(() => {
     const router = new Router();
     router.get('/b/:b', async ctx => {
         const b = ctx.params.b
-        console.log('b --->', b)
+        console.log('ctx------->', ctx)
         await handle(ctx.req, ctx.res, {
             pathname: '/b',
             query: {
@@ -24,10 +24,11 @@ app.prepare().then(() => {
     })
     server.use(router.routes())
     server.use(async (ctx, next) => {
+        // console.log('ctx--------->', ctx);
         await handle(ctx.req, ctx.res);
         ctx.respond = false
     })
-    server.listen(3000, () => {
+    server.listen(3050, () => {
         console.log('Koa server listening on 3000')
     })
 })

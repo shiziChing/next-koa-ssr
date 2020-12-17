@@ -1,21 +1,49 @@
-import App from 'next/app';
-import 'antd/dist/antd.css';
+import App, { Container } from 'next/app'
+import { Provider } from 'react-redux'
 
-class myApp extends App {
-    static async getInitialProps ({ Component }){
-        let pageProps={};
-        if(Component.getInitialProps){
-            pageProps = await Component.getInitialProps();
-        }
-        return {
-            pageProps
-        }
+import 'antd/dist/antd.css'
+
+// import MyContext from '../lib/my-context'
+// import Layout from '../components/Layout'
+
+import withRedux from '../lib/with-redux'
+
+class MyApp extends App {
+  state = {
+    context: 'value',
+  }
+
+  static async getInitialProps(ctx) {
+    const { Component } = ctx
+    console.log('app init')
+    let pageProps = {}
+    if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps(ctx)
     }
-    render() {
-        const { Component, pageProps } = this.props;
-        return (
-            <Component {...pageProps} />
-        );
+    return {
+      pageProps,
     }
+  }
+
+  render() {
+    const { Component, pageProps, reduxStore } = this.props
+
+    return (
+      <Container>
+        {/* <Layout> */}
+          <Provider store={reduxStore}>
+            {/* <MyContext.Provider value={this.state.context}> */}
+              <Component {...pageProps} />
+            {/* </MyContext.Provider> */}
+          </Provider>
+        {/* </Layout> */}
+
+
+
+        
+      </Container>
+    )
+  }
 }
-export default myApp;
+
+export default withRedux(MyApp)
